@@ -87,12 +87,12 @@ Built using FastAPI and YOLOv8. Designed to support asynchronous image processin
                  |
                  v
         +--------+--------+
-        |  queue.Queue     |  
+        |  queue.Queue     |  ← receives image jobs (1 image per job)
         +--------+--------+
                  |
                  v
         +--------+--------+
-        | Background Worker|  (ThreadPoolExecutor)
+        | Background Worker|  ← Thread (ThreadPoolExecutor)
         |  + YOLOv8 Model  |
         +--------+--------+
                  |
@@ -102,11 +102,11 @@ Built using FastAPI and YOLOv8. Designed to support asynchronous image processin
                  |
                  v
         +--------+--------+
-        |  Results Store   |  (results[batch_id][data] = results)
+        |  Results Store   | <- (results[batch_id][data][job_id] = job_result)
         +--------+--------+
                  ^
                  |
-    Client polls /result/{batch_id}
+    Client polls /result/{batch_id}  <- (results[batch_id])
                  |
           +------+------+
           |   Client    |
@@ -130,6 +130,15 @@ The following benchmarks compare execution time between local and Dockerized env
 |-------------------------|----------------|-------------------------------|
 | `upload_search_test.py` | 18 seconds     | 30 seconds                    |
 | `batch_upload_test.py`  | 159 seconds    | 283 seconds                   |
+
+### 🖥️ Test Environment Specs
+
+- **OS**: Windows 10 Education (64-bit)
+- **CPU**: AMD Ryzen 7 5700G (8 cores / 16 threads, 3.8 GHz)
+- **RAM**: 32 GB
+- **GPU**: AMD Radeon RX 7600 XT (YOLO model loading and prediction were performed on CPU due to unsupported CUDA on AMD GPUs)
+- **YOLO Model**: `yolov8n-seg.pt` (Segmentation task, CPU inference)
+
 
 ## 🧰 Setup Summary
 
