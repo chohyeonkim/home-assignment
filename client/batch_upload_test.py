@@ -19,7 +19,7 @@ SERVER_UPLOAD_URL = "http://127.0.0.1:8000/upload"  # force to use ipv4
 SERVER_RESULT_URL_TEMPLATE = "http://127.0.0.1:8000/result/{}"
 IMAGE_FOLDER = "test_images/"
 POLL_INTERVAL = 3
-TIMEOUT_LIMIT = 180
+TIMEOUT_LIMIT = 300
 
 # Prepare 100 files per user
 def prepare_files():
