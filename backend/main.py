@@ -17,8 +17,6 @@ def read_root():
 
 @app.post("/upload")
 async def upload_images(files:list[UploadFile] = File(...) ):
-    start_time = time.time()
-
     batch_id = str(uuid.uuid4())
     create_batch(batch_id, len(files))
 
@@ -31,9 +29,6 @@ async def upload_images(files:list[UploadFile] = File(...) ):
 
         job_queue.put((batch_id, job_id, content))
         print(f" [upload_images] job_id={job_id} added. Current queue size: {job_queue.qsize()}")
-
-    # elapsed = time.time() - start_time 
-    # print(f"[upload_images] Upload and enqueue took {elapsed:.2f} seconds")
 
     return {"batch_id": batch_id}
 

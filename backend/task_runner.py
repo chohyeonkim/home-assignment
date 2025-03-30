@@ -4,14 +4,13 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import time
 
-# results: dict[str, dict] = {
-#     batch_id (str): {
-#         "status": "processing" | "completed",
-#         "remaining": int,  # remaining task
+# results = {
+#     batch_id: {
+#         "status": str,            # "processing" | "completed"
+#         "remaining": int,         # remaining jobs in batch
 #         "data": {
-#             job_id (str): {
-#                 "pizza": 1234,
-#                 "apple": 400
+#             job_id: {
+#                 label (str): int  # e.g., "pizza": 1200
 #             }
 #         }
 #     }
@@ -43,7 +42,6 @@ def store_job_result(batch_id: str, job_id: str, res: dict):
         if results[batch_id]["remaining"] == 0:
             results[batch_id]["status"] = "completed"
 
-
 def worker():
     while True:
         batch_id, job_id, image_bytes = job_queue.get()
@@ -56,12 +54,10 @@ def worker():
             res = {"error": str(e)}
 
         store_job_result(batch_id=batch_id, job_id=job_id, res=res)
-        # print(f"[worker] Finished job_id={job_id}")
-
         job_queue.task_done()
-        # end_time = time.time() - start_time
-        # print("Worker Time : ", end_time)
-
+        
+        end_time = time.time() - start_time
+        print(f"[worker] Finished job_id ={job_id}, takes {end_time:.2f}s")
 
 def start_workers(workers):
     for _ in range(workers):
