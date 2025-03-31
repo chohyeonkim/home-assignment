@@ -1,15 +1,24 @@
 from fastapi import FastAPI, File, UploadFile
+from multiprocessing import Manager, Lock, JoinableQueue, set_start_method
 import uuid
 from task_runner import (
     create_batch,
-    job_queue,
     start_workers,
     get_batch_result,
 )
-import time
+from contextlib import asynccontextmanager
 
-app = FastAPI()
-start_workers(workers=4)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    manager = Manager()
+    app.state.results = manager.dict()
+    app.state.lock = Lock()
+    app.state.job_queue = JoinableQueue()
+
+    start_workers(4, app.state.job_queue, app.state.results, app.state.lock)
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def read_root():
@@ -18,7 +27,11 @@ def read_root():
 @app.post("/upload")
 async def upload_images(files:list[UploadFile] = File(...) ):
     batch_id = str(uuid.uuid4())
-    create_batch(batch_id, len(files))
+    results = app.state.results
+    lock = app.state.lock
+    job_queue = app.state.job_queue
+
+    create_batch(batch_id, len(files), results, lock)
 
     for file in files:
         job_id = str(uuid.uuid4())
@@ -34,5 +47,6 @@ async def upload_images(files:list[UploadFile] = File(...) ):
 
 @app.get("/result/{batch_id}")
 def batch_result(batch_id: str):
-    res = get_batch_result(batch_id)
-    return res
+    results = app.state.results
+    lock = app.state.lock
+    return get_batch_result(batch_id, results, lock)
