@@ -46,7 +46,7 @@ def run_yolo(image_bytes: bytes) -> dict:
         f"[run_yolo] image_decode: {t2 - t1:.2f}s, "
         f"inference: {t3 - t2:.2f}s, "
         f"postproc: {t4 - t3:.2f}s, "
-        f"total: {t4 - t0:.2f}s"
+        f"total: {t4 - t1:.2f}s"
     )
 
     return food_areas
