@@ -44,7 +44,7 @@ Built using FastAPI and YOLOv8. Designed to support asynchronous image processin
    fastapi dev backend/main.py
    ```
 
-## 🐳 Run with Docker (may be slower than running locally)
+## 🐳 Run with Docker (slower than running locally)
 
 1. Make sure Docker is installed and running.
 2. Run this from the root directory where `docker-compose.yml` is located.
@@ -56,6 +56,10 @@ Built using FastAPI and YOLOv8. Designed to support asynchronous image processin
    ```
    http://localhost:8000/docs
    ```
+
+⚠️ Note: The current implementation uses multiprocessing, creating 4 processes. If the CPU cores allocated to your Docker container are limited, the performance may be significantly slower. In this case, either allocate more CPU cores to your Docker container or run the app locally for better performance.
+
+Alternative option: you can make up for the limited resources by changing `start_workers(4, app.state.job_queue, app.state.results, app.state.lock)` from 4 to 1 or 2. While this may result in lower performance, it will ensure stability, Also you might need to adjust `TIMEOUT_LIMIT` in the test case
 
 ## 📤 Sending Requests (Client)
 
@@ -131,7 +135,7 @@ The following benchmarks compare execution time between local and Dockerized env
 | `upload_search_test.py` | 18 seconds                             | 10 ~ 12 seconds                     | 30 seconds                                         |
 | `batch_upload_test.py`  | 159 seconds                            | 91 seconds                          | 283 seconds                                        |
 
-### 🖥️ Test Environment Specs
+### 🖥️ Test Environment Specs (Local)
 
 - **OS**: Windows 10 Education (64-bit)
 - **CPU**: AMD Ryzen 7 5700G (8 cores / 16 threads, 3.8 GHz)
