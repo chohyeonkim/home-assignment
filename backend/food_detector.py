@@ -17,12 +17,12 @@ FOOD_CLASSES = {
     "sandwich",
 }
 
+
+model = YOLO("yolov8n-seg.pt")  # use cpu by default (AMD GPU)
+
 ### chatgpt - YOLO integration
 def run_yolo(image_bytes: bytes) -> dict:
-    t0 = time.time()
-    model = YOLO("yolov8n-seg.pt")  # bottleneck, use cpu by default (AMD GPU)
     t1 = time.time()
-
     image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     img_np = np.array(image)
     t2 = time.time()
@@ -43,8 +43,7 @@ def run_yolo(image_bytes: bytes) -> dict:
     t4 = time.time()
 
     print(
-        f"[run_yolo] model_load: {t1 - t0:.2f}s, "
-        f"image_decode: {t2 - t1:.2f}s, "
+        f"[run_yolo] image_decode: {t2 - t1:.2f}s, "
         f"inference: {t3 - t2:.2f}s, "
         f"postproc: {t4 - t3:.2f}s, "
         f"total: {t4 - t0:.2f}s"
