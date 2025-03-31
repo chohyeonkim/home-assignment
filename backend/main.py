@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
-from multiprocessing import Manager, Lock, JoinableQueue, set_start_method
+from multiprocessing import Manager, Lock, JoinableQueue
 import uuid
 from task_runner import (
     create_batch,
