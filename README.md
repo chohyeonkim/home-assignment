@@ -87,12 +87,12 @@ Built using FastAPI and YOLOv8. Designed to support asynchronous image processin
                  |
                  v
         +--------+--------+
-        |  queue.Queue     |  ← receives image jobs (1 image per job)
+        |  JoinableQueue   |  ← receives image jobs (1 image per job)
         +--------+--------+
                  |
                  v
         +--------+--------+
-        | Background Worker|  ← Thread (ThreadPoolExecutor)
+        | Background Worker|  ← multiprocessing workers
         |  + YOLOv8 Model  |
         +--------+--------+
                  |
@@ -126,10 +126,10 @@ Built using FastAPI and YOLOv8. Designed to support asynchronous image processin
 
 The following benchmarks compare execution time between local and Dockerized environments.
 
-| Test Script             | Local Run Time | Docker Run Time (1 container) |
-|-------------------------|----------------|-------------------------------|
-| `upload_search_test.py` | 18 seconds     | 30 seconds                    |
-| `batch_upload_test.py`  | 159 seconds    | 283 seconds                   |
+| Test Script             | Local Run Time with ThreadPoolExecutor | Local Run Time with multiprocessing | Docker Run Time (1 container - ThreadPoolExecutor) |
+|-------------------------|----------------------------------------|-------------------------------------| ---------------------------------------------------|
+| `upload_search_test.py` | 18 seconds                             | 10 ~ 12 seconds                     | 30 seconds                                         |
+| `batch_upload_test.py`  | 159 seconds                            | 91 seconds                          | 283 seconds                                        |
 
 ### 🖥️ Test Environment Specs
 
