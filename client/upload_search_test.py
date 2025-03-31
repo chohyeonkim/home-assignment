@@ -66,10 +66,18 @@ while True:
 
     res = response.json()
     if res["status"] == "completed":
-        for job_id in res["data"]:
-            print("job_id:", job_id)
-            for food, val in res["data"][job_id].items():
-                print(f"{food}:{val}\n") 
+        for job_id, job_data in res["data"].items():
+            print(f"Job ID: {job_id}")
+            
+            # If the job_data (food items) is empty, print a message
+            if not job_data:
+                print(" Not Food item ")
+            else:
+                # Print food and values in a single line
+                food_values = [f"{food}: {val}" for food, val in job_data.items()]
+                print("  " + " | ".join(food_values))
+            
+            print()  # Adding an empty line for better readability
         break
 
     print("Retrying after 2 seconds")

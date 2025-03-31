@@ -3,6 +3,7 @@ import os
 import requests
 import time
 import mimetypes
+import json
 
 # This test simulates 10 concurrent users uploading 100 images each
 # to test the backend's ability to handle parallel batch uploads and processing.
@@ -75,6 +76,15 @@ def simulate_user(user_id):
             print(
                 f"[User {user_id}] Task completed. Total time: {time.time() - start_upload:.2f}s"
             )
+
+            if not os.path.exists('results'):
+                os.makedirs('results')
+    
+            result_filename = f"results/user_{user_id}_result.json"
+            ## if json 'job_id' = {} it means the picture is not food item 
+            with open(result_filename, "w") as result_file:
+                    json.dump(result_data, result_file, indent=4)
+            
             return
         
         # print("Retrying after 3 seconds")
