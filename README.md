@@ -120,7 +120,6 @@ Alternative option: you can make up for the limited resources by changing `start
 
 ## 📌 Notes
 
-- This server supports **horizontal scaling** via Docker Compose.
 - Backend returns a `batch_id` immediately when the `upload_images` endpoint is called by the client.
 - Clients poll `/result/{batch_id}` to check result status.
 - No persistent storage or cloud services are used — in-memory queue only.
@@ -132,8 +131,8 @@ The following benchmarks compare execution time between local and Dockerized env
 
 | Test Script             | Local Run Time with ThreadPoolExecutor | Local Run Time with multiprocessing | Docker Run Time (1 container - ThreadPoolExecutor) |
 |-------------------------|----------------------------------------|-------------------------------------| ---------------------------------------------------|
-| `upload_search_test.py` | 18 seconds                             | 10 ~ 12 seconds                     | 30 seconds                                         |
-| `batch_upload_test.py`  | 159 seconds                            | 91 seconds                          | 283 seconds                                        |
+| `upload_search_test.py` | 18 seconds                             | 6 ~ 10 seconds                     | 30 seconds                                         |
+| `batch_upload_test.py`  | 159 seconds                            | 56 seconds                          | 283 seconds                                        |
 
 ### 🖥️ Test Environment Specs (Local)
 
